@@ -26,6 +26,7 @@ var bob = read[Person]('{"name":"Bob","age":25}')
 - `morph.reflect` -- Core reflection utilities (type matchers, field helpers)
 - `morph.serde` -- Serializable/Deserializable traits for custom overrides
 - `morph.rename` -- Field renaming strategies (snake_case <-> camelCase)
+- `morph.transform` -- Struct introspection and composition (fields, as_type)
 """
 
 from .reflect import (
@@ -49,3 +50,4 @@ from .rename import (
     snake_to_screaming,
     apply_rename,
 )
+from .transform import FieldInfo, fields, field_names, as_type
