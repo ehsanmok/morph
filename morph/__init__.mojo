@@ -23,6 +23,8 @@ var bob = read[Person]('{"name":"Bob","age":25}')
 ## Modules
 
 - `morph.json` -- JSON serialization/deserialization (powered by mojson)
+- `morph.toml` -- TOML serialization/deserialization (pure Mojo)
+- `morph.yaml` -- YAML serialization/deserialization (pure Mojo)
 - `morph.reflect` -- Core reflection utilities (type matchers, field helpers)
 - `morph.serde` -- Serializable/Deserializable traits for custom overrides
 - `morph.rename` -- Field renaming strategies (snake_case <-> camelCase)
@@ -73,3 +75,5 @@ from .validate import (
 from .schema import json_schema, json_schema_described
 from .cli import parse_args, parse_args_positional, parse_args_nested, usage
 from .csv import csv_header, to_csv_row, to_csv, from_csv_row, from_csv
+from .toml import to_toml, from_toml
+from .yaml import to_yaml, from_yaml

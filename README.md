@@ -6,7 +6,7 @@ Inspired by [reflect-cpp](https://github.com/getml/reflect-cpp), zero-boilerplat
 
 ## Why morph?
 
-Mojo structs don't serialize out of the box. `morph` uses compile-time reflection to automatically map struct fields to/from JSON, CSV, and CLI arguments (no manual `to_json()` or `from_json()` methods needed).
+Mojo structs don't serialize out of the box. `morph` uses compile-time reflection to automatically map struct fields to/from JSON, CSV, TOML, YAML, and CLI arguments (no manual `to_json()` or `from_json()` methods needed).
 
 ```mojo
 from morph import write, read
@@ -57,14 +57,14 @@ pixi install
 
 | Type | JSON | CSV | CLI | TOML | YAML |
 |------|------|-----|-----|------|------|
-| `Int`, `Int64` | yes | yes | yes | planned | planned |
-| `Bool` | yes | yes | yes (flag) | planned | planned |
-| `Float64`, `Float32` | yes | yes | yes | planned | planned |
-| `String` | yes | yes | yes | planned | planned |
-| `Optional[T]` | yes (null) | no | yes | planned | planned |
-| `List[T]` | yes | no | yes (comma) | planned | planned |
-| Nested structs | yes | no | yes (dot-notation) | planned | planned |
-| Custom traits | yes | no | no | planned | planned |
+| `Int`, `Int64` | yes | yes | yes | yes | yes |
+| `Bool` | yes | yes | yes (flag) | yes | yes |
+| `Float64`, `Float32` | yes | yes | yes | yes | yes |
+| `String` | yes | yes | yes | yes | yes |
+| `Optional[T]` | yes (null) | no | yes | yes (omit if None) | yes (null) |
+| `List[T]` | yes | no | yes (comma) | yes (arrays) | yes (sequences) |
+| Nested structs | yes | no | yes (dot-notation) | yes (tables) | yes (indented) |
+| Custom traits | yes | no | no | no | no |
 
 Where `T` is one of `Int`, `String`, `Float64`, `Bool`.
 
@@ -293,9 +293,38 @@ var rows = from_csv[Record](csv_string)  # parse CSV to List[Record]
 - Handles quoted fields (commas, newlines, double quotes)
 - Multi-row serialization with `to_csv_multi`
 
+### TOML Serde
+
+```mojo
+from morph.toml import to_toml, from_toml
+
+var toml = to_toml(config)
+var cfg = from_toml[Config](toml_str)
+```
+
+- Scalars, Optional, List, nested structs (as TOML tables)
+- Optional fields omitted when `None`
+- Lists serialized as inline TOML arrays
+- Supports field renaming (`rename` param)
+
+### YAML Serde
+
+```mojo
+from morph.yaml import to_yaml, from_yaml
+
+var yaml = to_yaml(person)
+var p = from_yaml[Person](yaml_str)
+```
+
+- Indentation-based YAML subset (no anchors, aliases, or tags)
+- Block sequences for lists, indented mappings for nested structs
+- Optional fields serialize as `null` when `None`
+- Handles `yes`/`no`/`on`/`off` as bool, `~` as null
+- Supports field renaming (`rename` param)
+
 ### Format Backend Trait
 
-Extensible format system for future TOML/YAML/MessagePack:
+Extensible format system for additional formats:
 
 ```mojo
 from morph.format import FormatBackend
@@ -312,6 +341,8 @@ struct MyFormat(FormatBackend):
 |--------|-------------|
 | `morph.json.writer` | Struct -> JSON serialization |
 | `morph.json.reader` | JSON -> struct deserialization |
+| `morph.toml` | TOML serialization/deserialization (pure Mojo) |
+| `morph.yaml` | YAML serialization/deserialization (pure Mojo) |
 | `morph.reflect` | Type introspection utilities |
 | `morph.rename` | Naming convention converters |
 | `morph.serde` | Custom Serializable/Deserializable traits |
@@ -333,7 +364,7 @@ pixi run tests
 ### Tasks
 
 ```bash
-pixi run tests            # Run all 191 tests + examples
+pixi run tests            # Run all 215 tests + examples
 pixi run test-serialize   # Run serialize tests only
 pixi run test-deserialize
 pixi run test-roundtrip
@@ -345,7 +376,8 @@ pixi run test-validate    # Validation, JSON Schema
 pixi run test-processors  # Processors integration (add_type, strict, as_array)
 pixi run test-cli-csv     # CLI parsing, CSV serde, string validators
 pixi run test-new-features # Exclusive validators, replace, CLI Optional/List/short
-pixi run examples         # Run all 9 examples
+pixi run test-toml-yaml   # TOML and YAML serde (24 tests)
+pixi run examples         # Run all 11 examples
 pixi run example-basic    # 01: Basic struct serde
 pixi run example-nested   # 02: Nested structs
 pixi run example-optional # 03: Optional and List fields
@@ -355,6 +387,8 @@ pixi run example-transform # 06: Introspection, serde options, as_type
 pixi run example-validate # 07: Validation and JSON Schema
 pixi run example-cli      # 08: CLI argument parsing
 pixi run example-csv      # 09: CSV serialization/deserialization
+pixi run example-toml     # 10: TOML serialization/deserialization
+pixi run example-yaml     # 11: YAML serialization/deserialization
 pixi run format           # Format code
 pixi run docs             # Generate and open API docs
 ```
@@ -383,13 +417,14 @@ core features. Where C++ uses enums, Mojo uses struct constants + validators. Wh
 | Flatten (embed sub-struct at parent level) | Done | `write_flat()` / `read_flat()` |
 | JSON Schema descriptions & deprecated | Done | `json_schema_described[T]()` |
 | Custom serde traits | Done | `Serializable` / `Deserializable` |
-| Format backend trait | Done (stub) | `FormatBackend` for TOML/YAML |
+| TOML serde (scalars, Optional, List, nested) | Done | `to_toml()` / `from_toml()` |
+| YAML serde (scalars, Optional, List, nested) | Done | `to_yaml()` / `from_yaml()` |
+| Format backend trait | Done (stub) | `FormatBackend` for extensibility |
 
 ### Remaining work
 
-- TOML backend (pure Mojo parser)
 - msgpack backend (pure Mojo binary format)
-- YAML backend (FFI to libyaml)
+- Custom serde traits for TOML/YAML
 
 ### Mojo language limitations
 
