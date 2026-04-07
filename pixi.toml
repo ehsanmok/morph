@@ -31,17 +31,17 @@ install-pre-commit = "pre-commit install"
 format = { cmd = "mojo format morph tests examples", depends-on = ["install-pre-commit"] }
 
 # Tests (includes examples)
-tests = "mojo -I . tests/test_reflect.mojo && mojo -I . tests/test_rename.mojo && mojo -I . tests/test_serialize.mojo && mojo -I . tests/test_deserialize.mojo && mojo -I . tests/test_roundtrip.mojo && mojo -I . tests/test_edge_cases.mojo && mojo -I . tests/test_phase2.mojo && mojo -I . tests/test_phase3.mojo && mojo -I . tests/test_phase4.mojo && mojo -I . tests/test_phase5_7.mojo && mojo -I . examples/01_basic_serde.mojo && mojo -I . examples/02_nested_structs.mojo && mojo -I . examples/03_optional_and_list.mojo && mojo -I . examples/04_custom_traits.mojo && mojo -I . examples/05_rename.mojo"
+tests = "mojo -I . tests/test_reflect.mojo && mojo -I . tests/test_rename.mojo && mojo -I . tests/test_serialize.mojo && mojo -I . tests/test_deserialize.mojo && mojo -I . tests/test_roundtrip.mojo && mojo -I . tests/test_edge_cases.mojo && mojo -I . tests/test_transform.mojo && mojo -I . tests/test_validate.mojo && mojo -I . tests/test_processors.mojo && mojo -I . tests/test_cli_csv.mojo && mojo -I . examples/01_basic_serde.mojo && mojo -I . examples/02_nested_structs.mojo && mojo -I . examples/03_optional_and_list.mojo && mojo -I . examples/04_custom_traits.mojo && mojo -I . examples/05_rename.mojo"
 test-reflect = "mojo -I . tests/test_reflect.mojo"
 test-rename = "mojo -I . tests/test_rename.mojo"
 test-serialize = "mojo -I . tests/test_serialize.mojo"
 test-deserialize = "mojo -I . tests/test_deserialize.mojo"
 test-roundtrip = "mojo -I . tests/test_roundtrip.mojo"
 test-edge-cases = "mojo -I . tests/test_edge_cases.mojo"
-test-phase2 = "mojo -I . tests/test_phase2.mojo"
-test-phase3 = "mojo -I . tests/test_phase3.mojo"
-test-phase4 = "mojo -I . tests/test_phase4.mojo"
-test-phase5-7 = "mojo -I . tests/test_phase5_7.mojo"
+test-transform = "mojo -I . tests/test_transform.mojo"
+test-validate = "mojo -I . tests/test_validate.mojo"
+test-processors = "mojo -I . tests/test_processors.mojo"
+test-cli-csv = "mojo -I . tests/test_cli_csv.mojo"
 
 # Examples
 example-basic = "mojo -I . examples/01_basic_serde.mojo"

@@ -2,11 +2,11 @@
 
 Reflection-driven serialization, deserialization, and data transformation for Mojo.
 
-Inspired by [reflect-cpp](https://github.com/getml/reflect-cpp) — zero-boilerplate struct serde using compile-time reflection.
+Inspired by [reflect-cpp](https://github.com/getml/reflect-cpp), zero-boilerplate struct serde using compile-time reflection.
 
 ## Why morph?
 
-Mojo structs don't serialize out of the box. `morph` uses compile-time reflection to automatically map struct fields to/from JSON, CSV, and CLI arguments — no manual `to_json()` or `from_json()` methods needed.
+Mojo structs don't serialize out of the box. `morph` uses compile-time reflection to automatically map struct fields to/from JSON, CSV, and CLI arguments (no manual `to_json()` or `from_json()` methods needed).
 
 ```mojo
 from morph import write, read
@@ -238,10 +238,10 @@ pixi run test-roundtrip
 pixi run test-edge-cases
 pixi run test-reflect
 pixi run test-rename
-pixi run test-phase2      # Rename, skip_private, transform, defaults
-pixi run test-phase3      # Validation, JSON Schema
-pixi run test-phase4      # Processors integration
-pixi run test-phase5-7    # CLI, CSV, string validators
+pixi run test-transform   # Rename, skip_private, transform, defaults
+pixi run test-validate    # Validation, JSON Schema
+pixi run test-processors  # Processors integration (add_type, strict, as_array)
+pixi run test-cli-csv     # CLI parsing, CSV serde, string validators
 pixi run examples         # Run all examples
 pixi run format           # Format code
 pixi run docs             # Generate and open API docs
