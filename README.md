@@ -129,10 +129,10 @@ from morph import check_min, check_max, check_range, check_non_empty,
     check_min_length, check_max_length, check_one_of, raise_if_errors
 
 var errors = List[ValidationError]()
-var e1 = check_min("age", config.age, 0)
+var e1 = check_min(config.age, 0, "age")
 if e1:
     errors.append(e1.value().copy())
-var e2 = check_non_empty("name", config.name)
+var e2 = check_non_empty(config.name, "name")
 if e2:
     errors.append(e2.value().copy())
 raise_if_errors(errors)
@@ -242,7 +242,16 @@ pixi run test-transform   # Rename, skip_private, transform, defaults
 pixi run test-validate    # Validation, JSON Schema
 pixi run test-processors  # Processors integration (add_type, strict, as_array)
 pixi run test-cli-csv     # CLI parsing, CSV serde, string validators
-pixi run examples         # Run all examples
+pixi run examples         # Run all 9 examples
+pixi run example-basic    # 01: Basic struct serde
+pixi run example-nested   # 02: Nested structs
+pixi run example-optional # 03: Optional and List fields
+pixi run example-custom   # 04: Custom Serializable/Deserializable traits
+pixi run example-rename   # 05: Field renaming strategies
+pixi run example-transform # 06: Introspection, serde options, as_type
+pixi run example-validate # 07: Validation and JSON Schema
+pixi run example-cli      # 08: CLI argument parsing
+pixi run example-csv      # 09: CSV serialization/deserialization
 pixi run format           # Format code
 pixi run docs             # Generate and open API docs
 ```
