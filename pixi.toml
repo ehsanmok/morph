@@ -23,6 +23,7 @@ mojodoc = { git = "https://github.com/ehsanmok/mojodoc.git", branch = "main" }
 
 [environments]
 default = { features = ["dev"], solve-group = "default" }
+dev     = { features = ["dev"], solve-group = "default" }
 
 [tasks]
 # Format
