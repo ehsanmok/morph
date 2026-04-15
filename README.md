@@ -48,13 +48,20 @@ channels = ["https://conda.modular.com/max-nightly", "conda-forge"]
 preview = ["pixi-build"]
 
 [dependencies]
-morph = { git = "https://github.com/ehsanmok/morph.git", branch = "main" }
+morph = { git = "https://github.com/ehsanmok/morph.git", tag = "v0.1.0" }
 ```
 
 Then run:
 
 ```bash
 pixi install
+```
+
+For the latest development version:
+
+```toml
+[dependencies]
+morph = { git = "https://github.com/ehsanmok/morph.git", branch = "main" }
 ```
 
 ## Supported Types
