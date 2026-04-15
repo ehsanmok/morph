@@ -73,7 +73,7 @@ pixi install
 Where `T` is one of `Int`, `String`, `Float64`, `Bool`.
 
 **CSV limitations** (inherent to the format):
-CSV is flat/tabular -- Optional needs an empty-string convention, List needs delimiter sub-fields, nested structs need column flattening.
+CSV is flat/tabular: Optional needs an empty-string convention, List needs delimiter sub-fields, nested structs need column flattening.
 
 ## Features
 
