@@ -1,6 +1,6 @@
 package:
   name: morph
-  version: "0.1.2"
+  version: "0.1.3"
 
 source:
   path: .
@@ -12,9 +12,9 @@ build:
 
 requirements:
   host:
-    - mojo ==1.0.0b1
+    - mojo ==1.0.0b2
   run:
-    - mojo ==1.0.0b1
+    - mojo ==1.0.0b2
 
 about:
   summary: Reflection-powered serialization, deserialization, and validation for Mojo

@@ -16,7 +16,7 @@ from morph.validate import (
     raise_if_errors,
 )
 from morph.schema import json_schema
-from collections import List, Optional
+from std.collections import List, Optional
 from std.testing import assert_equal, assert_true
 
 

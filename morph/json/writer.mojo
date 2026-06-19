@@ -96,7 +96,7 @@ def _ser[
     as_array: Bool = False,
 ](value: T) raises -> String:
     """Dispatch serialization by compile-time type."""
-    comptime tname = reflect[T]().name()
+    comptime tname = reflect[T].name()
 
     comptime
     if tname == STRING_NAME:
@@ -127,7 +127,7 @@ def _ser[
         return String(rebind[Float64](value))
     elif tname == FLOAT32_NAME or _FLOAT32_SIMD_PREFIX in tname:
         return String(rebind[Float32](value))
-    elif reflect[T]().is_struct():
+    elif reflect[T].is_struct():
         comptime
         if conforms_to(T, Serializable):
             ref custom = trait_downcast[Serializable](value)
@@ -146,9 +146,9 @@ def _ser_struct[
     as_array: Bool = False,
 ](value: T) raises -> String:
     """Serialize a struct as JSON object or array."""
-    comptime field_count = reflect[T]().field_count()
-    comptime field_names = reflect[T]().field_names()
-    comptime field_types = reflect[T]().field_types()
+    comptime field_count = reflect[T].field_count()
+    comptime field_names = reflect[T].field_names()
+    comptime field_types = reflect[T].field_types()
 
     # --- Array mode: [val, val, ...] ---
     comptime
@@ -171,7 +171,7 @@ def _ser_struct[
                 if not first:
                     out += ","
                 first = False
-                ref field = reflect[T]().field_ref[idx](value)
+                ref field = reflect[T].field_ref[idx](value)
                 out += _ser[field_type, rename, skip_private, False, as_array](
                     rebind[field_type](field)
                 )
@@ -186,7 +186,7 @@ def _ser_struct[
 
         comptime
         if add_type:
-            comptime type_name = reflect[T]().base_name()
+            comptime type_name = reflect[T].base_name()
             out += '"type":"' + String(type_name) + '"'
             first = False
 
@@ -217,7 +217,7 @@ def _ser_struct[
 
                 out += '"' + key_name + '":'
 
-                ref field = reflect[T]().field_ref[idx](value)
+                ref field = reflect[T].field_ref[idx](value)
                 out += _ser[field_type, rename, skip_private, False, as_array](
                     rebind[field_type](field)
                 )

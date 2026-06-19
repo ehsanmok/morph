@@ -119,9 +119,9 @@ def _fill[
     no_optionals: Bool = False,
 ](mut result: T, json: Value) raises:
     """Fill every field of result from the JSON object."""
-    comptime field_count = reflect[T]().field_count()
-    comptime field_names = reflect[T]().field_names()
-    comptime field_types = reflect[T]().field_types()
+    comptime field_count = reflect[T].field_count()
+    comptime field_names = reflect[T].field_names()
+    comptime field_types = reflect[T].field_types()
 
     # --- strict mode: check for unknown keys ---
     comptime
@@ -148,7 +148,7 @@ def _fill[
     for idx in range(field_count):
         comptime field_name = field_names[idx]
         comptime field_type = field_types[idx]
-        comptime field_type_name = reflect[field_type]().name()
+        comptime field_type_name = reflect[field_type].name()
 
         var raw_name = String(field_name)
         var skip = False
@@ -176,7 +176,7 @@ def _fill[
                     if not (field_type_name == OPT_INT_NAME or field_type_name == OPT_STRING_NAME or field_type_name == OPT_FLOAT64_NAME or field_type_name == OPT_BOOL_NAME):
                         raise Error("Missing required field '" + key + "'")
             else:
-                ref field = trait_downcast[_Base](reflect[T]().field_ref[idx](result))
+                ref field = trait_downcast[_Base](reflect[T].field_ref[idx](result))
                 var ptr = UnsafePointer(to=field)
 
                 comptime
@@ -253,7 +253,7 @@ def _fill[
                     ptr.bitcast[Float32]().init_pointee_move(
                         Float32(get_float(json, key))
                     )
-                elif reflect[field_type]().is_struct():
+                elif reflect[field_type].is_struct():
                     var raw = json.get(key)
                     var sub_json = loads(raw)
                     if not sub_json.is_object():

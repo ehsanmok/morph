@@ -54,7 +54,7 @@ def camel_to_snake(name: String) -> String:
     for i in range(len(bytes)):
         var b = bytes[i]
         if _is_upper_byte(b):
-            if len(result) > 0:
+            if result.byte_length() > 0:
                 result += "_"
             result += _lower_byte(b)
         else:
