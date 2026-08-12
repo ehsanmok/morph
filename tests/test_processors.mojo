@@ -8,7 +8,12 @@ and integration with other features.
 
 from morph.json import write, read
 from morph.schema import json_schema
-from morph.validate import check_min, check_non_empty, raise_if_errors, ValidationError
+from morph.validate import (
+    check_min,
+    check_non_empty,
+    raise_if_errors,
+    ValidationError,
+)
 from std.collections import Optional, List
 from std.testing import assert_equal, assert_true
 
@@ -178,7 +183,9 @@ def test_roundtrip_with_all_features() raises:
 
     assert_true('"type":"Config"' in json)
 
-    var restored = read[Config, rename="camelCase", default_if_missing=True](json)
+    var restored = read[Config, rename="camelCase", default_if_missing=True](
+        json
+    )
     assert_equal(restored.host, "prod.server.com")
     assert_equal(restored.port, 443)
     assert_equal(restored.debug, False)

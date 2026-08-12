@@ -34,7 +34,7 @@ struct CliOpts(Defaultable, Movable):
 
 
 @fieldwise_init
-struct CsvRecord(Defaultable, Movable, Copyable):
+struct CsvRecord(Copyable, Defaultable, Movable):
     var name: String
     var age: Int
     var score: Float64
@@ -48,7 +48,7 @@ struct CsvRecord(Defaultable, Movable, Copyable):
 
 
 @fieldwise_init
-struct SimpleRec(Defaultable, Movable, Copyable):
+struct SimpleRec(Copyable, Defaultable, Movable):
     var x: Int
     var y: Int
 
@@ -256,12 +256,12 @@ def test_csv_roundtrip() raises:
     var current = String("")
     var data = csv.as_bytes()
     for i in range(len(data)):
-        if data[i] == UInt8(ord('\n')):
+        if data[i] == UInt8(ord("\n")):
             lines.append(current^)
             current = String("")
         else:
             current += chr(Int(data[i]))
-    if len(current) > 0:
+    if current.byte_length() > 0:
         lines.append(current^)
 
     var restored = from_csv_row[CsvRecord](header, lines[1])

@@ -65,7 +65,7 @@ def _toml_to_json(toml_str: String) raises -> String:
     for li in range(len(lines)):
         var line = _strip(lines[li])
 
-        if len(line) == 0 or line.as_bytes()[0] == UInt8(ord("#")):
+        if line.byte_length() == 0 or line.as_bytes()[0] == UInt8(ord("#")):
             continue
 
         if line.as_bytes()[0] == UInt8(ord("[")):
@@ -83,7 +83,7 @@ def _toml_to_json(toml_str: String) raises -> String:
             continue
 
         var key = _strip(_substr(line, 0, eq_pos))
-        var val = _strip(_substr(line, eq_pos + 1, len(line)))
+        var val = _strip(_substr(line, eq_pos + 1, line.byte_length()))
         var json_val = _toml_value_to_json(val)
 
         if current_table_idx >= 0:
@@ -132,7 +132,7 @@ def _toml_to_json(toml_str: String) raises -> String:
 
 def _toml_value_to_json(val: String) raises -> String:
     """Convert a TOML value string to its JSON equivalent."""
-    if len(val) == 0:
+    if val.byte_length() == 0:
         return '""'
 
     var first_byte = val.as_bytes()[0]
@@ -230,14 +230,14 @@ def _parse_toml_array(val: String) raises -> String:
             depth -= 1
             if depth == 0:
                 var stripped = _strip(current)
-                if len(stripped) > 0:
+                if stripped.byte_length() > 0:
                     items.append(stripped^)
                 break
             else:
                 current += "]"
         elif ch == UInt8(ord(",")) and depth == 1:
             var stripped = _strip(current)
-            if len(stripped) > 0:
+            if stripped.byte_length() > 0:
                 items.append(stripped^)
             current = String("")
         else:
@@ -267,7 +267,7 @@ def _split_lines(s: String) -> List[String]:
             current = String("")
         else:
             current += chr(Int(data[i]))
-    if len(current) > 0:
+    if current.byte_length() > 0:
         lines.append(current^)
     return lines^
 

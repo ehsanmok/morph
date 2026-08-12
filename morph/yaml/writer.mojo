@@ -154,7 +154,7 @@ def _ser_mapping[
 
 def _yaml_scalar(s: String) -> String:
     """Format a YAML string scalar, quoting if needed."""
-    if len(s) == 0:
+    if s.byte_length() == 0:
         return '""'
 
     var needs_quote = False

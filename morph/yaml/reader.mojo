@@ -90,7 +90,7 @@ def _yaml_to_json(yaml_str: String) raises -> String:
             continue
 
         var content = _rstrip(_substr_bytes(data, content_start, len(data)))
-        if len(content) == 0:
+        if content.byte_length() == 0:
             continue
 
         var comment_pos = _find_unquoted_char(content, "#")
@@ -144,7 +144,7 @@ def _parse_mapping(
         first = False
         out += '"' + key + '":'
 
-        if len(val_part) > 0:
+        if val_part.byte_length() > 0:
             var val_data = val_part.as_bytes()
             if val_data[0] == UInt8(ord("[")):
                 out += _parse_flow_sequence(val_part)
@@ -248,14 +248,14 @@ def _parse_flow_sequence(val: String) raises -> String:
             depth -= 1
             if depth == 0:
                 var stripped = _strip_str(current)
-                if len(stripped) > 0:
+                if stripped.byte_length() > 0:
                     items.append(stripped^)
                 break
             else:
                 current += "]"
         elif ch == UInt8(ord(",")) and depth == 1:
             var stripped = _strip_str(current)
-            if len(stripped) > 0:
+            if stripped.byte_length() > 0:
                 items.append(stripped^)
             current = String("")
         else:
@@ -344,7 +344,7 @@ def _split_lines(s: String) -> List[String]:
             current = String("")
         else:
             current += chr(Int(data[i]))
-    if len(current) > 0:
+    if current.byte_length() > 0:
         lines.append(current^)
     return lines^
 

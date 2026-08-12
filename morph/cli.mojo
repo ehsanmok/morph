@@ -73,7 +73,7 @@ def parse_args[T: Morphable](args: List[String]) raises -> T:
     while i < len(args):
         var arg = args[i]
         var is_long = arg.startswith("--")
-        var is_short = not is_long and arg.startswith("-") and len(arg) == 2
+        var is_short = not is_long and arg.startswith("-") and arg.byte_length() == 2
 
         if not is_long and not is_short:
             raise Error("Expected --flag or -x, got: " + arg)
@@ -251,7 +251,7 @@ def parse_args_positional[T: Morphable](args: List[String]) raises -> T:
     while i < len(args):
         var arg = args[i]
         var is_long = arg.startswith("--")
-        var is_short = not is_long and arg.startswith("-") and len(arg) == 2
+        var is_short = not is_long and arg.startswith("-") and arg.byte_length() == 2
 
         if not is_long and not is_short:
             var pos_matched = False
@@ -390,7 +390,7 @@ def parse_args_nested[T: Morphable](args: List[String]) raises -> T:
         var dot_pos = _find_char(flag, ".")
         if dot_pos >= 0:
             var parent = _substr(flag, 0, dot_pos).replace("-", "_")
-            var child = _substr(flag, dot_pos + 1, len(flag)).replace("-", "_")
+            var child = _substr(flag, dot_pos + 1, flag.byte_length()).replace("-", "_")
             i += 1
             if i >= len(args):
                 raise Error("Missing value for --" + flag)
@@ -465,7 +465,7 @@ def _maybe_quote(json: Value, key: String, val: String) -> String:
 
     try:
         var raw = json.get(key)
-        if len(raw) > 0 and raw.as_bytes()[0] == UInt8(ord('"')):
+        if raw.byte_length() > 0 and raw.as_bytes()[0] == UInt8(ord('"')):
             return _escape_string(val)
     except:
         pass
@@ -488,7 +488,7 @@ def _split_comma(s: String) -> List[String]:
             current = String("")
         else:
             current += chr(Int(data[i]))
-    if len(current) > 0:
+    if current.byte_length() > 0:
         result.append(current^)
     return result^
 

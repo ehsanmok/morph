@@ -140,7 +140,7 @@ def _ser_table[
                 scalars += key + " = " + String(rebind[Float32](field)) + "\n"
             elif reflect[field_type].is_struct():
                 var section: String
-                if len(prefix) > 0:
+                if prefix.byte_length() > 0:
                     section = prefix + "." + key
                 else:
                     section = key

@@ -9,7 +9,7 @@ from std.collections import List
 
 
 @fieldwise_init
-struct Employee(Defaultable, Movable, Copyable):
+struct Employee(Copyable, Defaultable, Movable):
     var name: String
     var department: String
     var salary: Int
@@ -83,12 +83,7 @@ def main() raises:
     var restored = from_csv[Employee](csv)
     print("Original: " + original.name + " $" + String(original.salary))
     print("CSV:\n" + csv)
-    print(
-        "Restored: "
-        + restored[0].name
-        + " $"
-        + String(restored[0].salary)
-    )
+    print("Restored: " + restored[0].name + " $" + String(restored[0].salary))
     print(
         "Match: "
         + String(

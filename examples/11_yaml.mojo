@@ -67,7 +67,9 @@ def main() raises:
 
     print("\nParse handwritten YAML:")
     var hand = from_yaml[Person](
-        "name: Bob\nage: 25\nactive: false\nscore: 7.2\nnickname: null\nhobbies:\n  - chess\n  - cooking\naddress:\n  street: 456 Oak Ave\n  city: Shelbyville\n"
+        "name: Bob\nage: 25\nactive: false\nscore: 7.2\nnickname:"
+        " null\nhobbies:\n  - chess\n  - cooking\naddress:\n  street: 456 Oak"
+        " Ave\n  city: Shelbyville\n"
     )
     print("  name:", hand.name)
     print("  active:", hand.active)

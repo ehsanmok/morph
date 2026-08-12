@@ -65,7 +65,9 @@ def main() raises:
 
     print("\nParse handwritten TOML:")
     var hand = from_toml[AppConfig](
-        'title = "FromFile"\ndebug = false\nversion = 2.0\ntags = ["prod"]\n\n[database]\nhost = "db.example.com"\nport = 3306\nname = "prod_db"\n'
+        'title = "FromFile"\ndebug = false\nversion = 2.0\ntags ='
+        ' ["prod"]\n\n[database]\nhost = "db.example.com"\nport = 3306\nname ='
+        ' "prod_db"\n'
     )
     print("  title:", hand.title)
     print("  database.host:", hand.database.host)

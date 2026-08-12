@@ -254,7 +254,7 @@ def escape_string(s: String) -> String:
                 seq_len = min(3, n - i)
             else:
                 seq_len = min(2, n - i)
-            out += s[byte=i : i + seq_len]
+            out += s[byte = i : i + seq_len]
             i += seq_len
         else:
             out += chr(Int(c))
@@ -333,8 +333,10 @@ def _parse_value(s: String) raises -> Value:
         var is_float = False
         while i < n:
             var d = data[i]
-            if d == UInt8(ord("-")) or d == UInt8(ord("+")) or (
-                d >= UInt8(ord("0")) and d <= UInt8(ord("9"))
+            if (
+                d == UInt8(ord("-"))
+                or d == UInt8(ord("+"))
+                or (d >= UInt8(ord("0")) and d <= UInt8(ord("9")))
             ):
                 num_str += chr(Int(d))
             elif (
@@ -398,9 +400,8 @@ def _unescape(s: String, start: Int, end: Int) -> String:
             elif next_c == UInt8(ord("u")) and i + 5 < end:
                 var cp = _parse_hex4(data, i + 2)
                 if cp >= 0xD800 and cp <= 0xDBFF and i + 11 < end:
-                    if (
-                        data[i + 6] == UInt8(ord("\\"))
-                        and data[i + 7] == UInt8(ord("u"))
+                    if data[i + 6] == UInt8(ord("\\")) and data[i + 7] == UInt8(
+                        ord("u")
                     ):
                         var low = _parse_hex4(data, i + 8)
                         cp = 0x10000 + ((cp - 0xD800) << 10) + (low - 0xDC00)
@@ -418,7 +419,7 @@ def _unescape(s: String, start: Int, end: Int) -> String:
                 # Multi-byte UTF-8 continuation byte: append as StringSlice
                 # view of the original String so the raw byte is NOT
                 # reinterpreted as a Unicode code point by chr().
-                out += s[byte=i : i + 1]
+                out += s[byte = i : i + 1]
                 i += 1
             else:
                 out += chr(Int(b))
@@ -575,7 +576,9 @@ def _extract_field_value(raw: String, key: String) raises -> String:
                     i += 2
                 else:
                     i += 1
-            var found_key = String(from_utf8_lossy=raw[byte=key_start:i].as_bytes())
+            var found_key = String(
+                from_utf8_lossy=raw[byte=key_start:i].as_bytes()
+            )
             i += 1
 
             while i < n and (
@@ -629,7 +632,7 @@ def _extract_json_value(raw: String, start: Int) raises -> String:
             if data[i] == UInt8(ord("\\")):
                 i += 2
             elif data[i] == UInt8(ord('"')):
-                return String(from_utf8_lossy=raw[byte=vs : i + 1].as_bytes())
+                return String(from_utf8_lossy=raw[byte = vs : i + 1].as_bytes())
             else:
                 i += 1
         raise Error("Unterminated string")

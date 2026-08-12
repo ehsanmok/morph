@@ -168,7 +168,9 @@ def test_toml_write_list() raises:
 
 
 def test_toml_write_nested() raises:
-    var p = Person(name="Bob", age=25, address=Address(city="NYC", zip_code=10001))
+    var p = Person(
+        name="Bob", age=25, address=Address(city="NYC", zip_code=10001)
+    )
     var toml = to_toml(p)
     assert_true('name = "Bob"' in toml, "toml has name")
     assert_true("[address]" in toml, "toml has [address] section")
@@ -226,7 +228,9 @@ def test_toml_roundtrip_list() raises:
 
 
 def test_toml_roundtrip_nested() raises:
-    var p = Person(name="Carol", age=40, address=Address(city="LA", zip_code=90001))
+    var p = Person(
+        name="Carol", age=40, address=Address(city="LA", zip_code=90001)
+    )
     var toml = to_toml(p)
     var r = from_toml[Person](toml)
     assert_equal(r.name, "Carol")
@@ -303,7 +307,9 @@ def test_yaml_write_list() raises:
 
 
 def test_yaml_write_nested() raises:
-    var p = Person(name="Bob", age=25, address=Address(city="NYC", zip_code=10001))
+    var p = Person(
+        name="Bob", age=25, address=Address(city="NYC", zip_code=10001)
+    )
     var yaml = to_yaml(p)
     assert_true("name: Bob" in yaml, "yaml has name")
     assert_true("address:" in yaml, "yaml has address:")
@@ -361,7 +367,9 @@ def test_yaml_roundtrip_list() raises:
 
 
 def test_yaml_roundtrip_nested() raises:
-    var p = Person(name="Carol", age=40, address=Address(city="LA", zip_code=90001))
+    var p = Person(
+        name="Carol", age=40, address=Address(city="LA", zip_code=90001)
+    )
     var yaml = to_yaml(p)
     var r = from_yaml[Person](yaml)
     assert_equal(r.name, "Carol")

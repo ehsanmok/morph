@@ -69,7 +69,7 @@ def json_schema[
     schema += "}"
 
     var req = _required[T, rename]()
-    if len(req) > 0:
+    if req.byte_length() > 0:
         schema += ',"required":[' + req + "]"
 
     schema += "}"
@@ -142,7 +142,8 @@ def _required[T: AnyType, rename: StaticString = "none"]() -> String:
                 out += ","
             first = False
 
-            var key = String(names[idx])
+            comptime field_name = names[idx]
+            var key = String(field_name)
 
             comptime
             if rename == "camelCase":
@@ -195,7 +196,7 @@ def json_schema_described[
     schema += "}"
 
     var req = _required[T, rename]()
-    if len(req) > 0:
+    if req.byte_length() > 0:
         schema += ',"required":[' + req + "]"
 
     schema += "}"
@@ -269,7 +270,7 @@ def _properties_described[
 
 def _contains_word(csv: String, word: String) -> Bool:
     """Check if word appears in a comma-separated list."""
-    if len(csv) == 0:
+    if csv.byte_length() == 0:
         return False
     var data = csv.as_bytes()
     var w = word.as_bytes()
@@ -321,7 +322,7 @@ def _type_schema[T: AnyType, type_name: StaticString]() -> String:
         schema += _properties[T]()
         schema += "}"
         var req = _required[T]()
-        if len(req) > 0:
+        if req.byte_length() > 0:
             schema += ',"required":[' + req + "]"
         schema += "}"
         return schema^

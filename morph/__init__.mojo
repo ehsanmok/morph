@@ -210,7 +210,14 @@ from .rename import (
     snake_to_screaming,
     apply_rename,
 )
-from .transform import FieldInfo, fields, field_names, as_type, replace, replace_int
+from .transform import (
+    FieldInfo,
+    fields,
+    field_names,
+    as_type,
+    replace,
+    replace_int,
+)
 from .validate import (
     ValidationError,
     check_min,

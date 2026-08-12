@@ -197,7 +197,7 @@ def test_long_string_field() raises:
     var long = String("a") * 1000
     var s = StringHolder(v=long)
     var r = read[StringHolder](write(s))
-    assert_equal(len(r.v), 1000)
+    assert_equal(r.v.byte_length(), 1000)
 
 
 # ---------------------------------------------------------------------------

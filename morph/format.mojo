@@ -22,7 +22,8 @@ trait FormatBackend:
         ...
 
     def deserialize(self, data: String) raises -> String:
-        """Deserialize target format string to intermediate (JSON-like) string."""
+        """Deserialize target format string to intermediate (JSON-like) string.
+        """
         ...
 
     def file_extension(self) -> String:

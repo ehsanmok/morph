@@ -10,7 +10,12 @@ from morph.validate import (
     raise_if_errors,
 )
 from morph.transform import fields, field_names, replace, replace_int, as_type
-from morph.cli import parse_args, parse_args_nested, parse_args_positional, usage
+from morph.cli import (
+    parse_args,
+    parse_args_nested,
+    parse_args_positional,
+    usage,
+)
 from morph.json.reader import read, read_flat
 from morph.json.writer import write, write_flat
 from morph.schema import json_schema, json_schema_described
@@ -410,7 +415,10 @@ def test_schema_described_basic() raises:
     descs["name"] = "The person's full name"
     descs["age"] = "Age in years"
     var schema = json_schema_described[Person](descs)
-    assert_true('"description":"The person\'s full name"' in schema or '"description":"The person' in schema)
+    assert_true(
+        '"description":"The person\'s full name"' in schema
+        or '"description":"The person' in schema
+    )
     assert_true('"description":"Age in years"' in schema)
 
 

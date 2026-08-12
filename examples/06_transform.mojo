@@ -71,10 +71,7 @@ def main() raises:
     var partial = '{"first_name":"Eve"}'
     var filled = read[User, default_if_missing=True](partial)
     print(
-        "From partial JSON: "
-        + filled.first_name
-        + " age="
-        + String(filled.age)
+        "From partial JSON: " + filled.first_name + " age=" + String(filled.age)
     )
 
     print("\n=== Strict Mode ===\n")

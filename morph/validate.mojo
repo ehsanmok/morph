@@ -43,7 +43,9 @@ struct ValidationError(Copyable, Movable, Writable):
 # ---------------------------------------------------------------------------
 
 
-def check_min(value: Int, minimum: Int, field_name: String) -> Optional[ValidationError]:
+def check_min(
+    value: Int, minimum: Int, field_name: String
+) -> Optional[ValidationError]:
     """Check value >= minimum."""
     if value < minimum:
         return ValidationError(
@@ -53,7 +55,9 @@ def check_min(value: Int, minimum: Int, field_name: String) -> Optional[Validati
     return None
 
 
-def check_max(value: Int, maximum: Int, field_name: String) -> Optional[ValidationError]:
+def check_max(
+    value: Int, maximum: Int, field_name: String
+) -> Optional[ValidationError]:
     """Check value <= maximum."""
     if value > maximum:
         return ValidationError(
@@ -152,9 +156,11 @@ def check_exclusive_max_float(
     return None
 
 
-def check_non_empty(value: String, field_name: String) -> Optional[ValidationError]:
+def check_non_empty(
+    value: String, field_name: String
+) -> Optional[ValidationError]:
     """Check string is non-empty."""
-    if len(value) == 0:
+    if value.byte_length() == 0:
         return ValidationError(
             field=field_name,
             message="must not be empty",
@@ -166,13 +172,13 @@ def check_min_length(
     value: String, min_len: Int, field_name: String
 ) -> Optional[ValidationError]:
     """Check string length >= min_len."""
-    if len(value) < min_len:
+    if value.byte_length() < min_len:
         return ValidationError(
             field=field_name,
             message="length must be >= "
             + String(min_len)
             + ", got "
-            + String(len(value)),
+            + String(value.byte_length()),
         )
     return None
 
@@ -181,18 +187,20 @@ def check_max_length(
     value: String, max_len: Int, field_name: String
 ) -> Optional[ValidationError]:
     """Check string length <= max_len."""
-    if len(value) > max_len:
+    if value.byte_length() > max_len:
         return ValidationError(
             field=field_name,
             message="length must be <= "
             + String(max_len)
             + ", got "
-            + String(len(value)),
+            + String(value.byte_length()),
         )
     return None
 
 
-def check_equal(value: Int, expected: Int, field_name: String) -> Optional[ValidationError]:
+def check_equal(
+    value: Int, expected: Int, field_name: String
+) -> Optional[ValidationError]:
     """Check value == expected."""
     if value != expected:
         return ValidationError(
@@ -202,7 +210,9 @@ def check_equal(value: Int, expected: Int, field_name: String) -> Optional[Valid
     return None
 
 
-def check_not_equal(value: Int, forbidden: Int, field_name: String) -> Optional[ValidationError]:
+def check_not_equal(
+    value: Int, forbidden: Int, field_name: String
+) -> Optional[ValidationError]:
     """Check value != forbidden."""
     if value == forbidden:
         return ValidationError(

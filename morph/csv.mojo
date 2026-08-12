@@ -48,7 +48,7 @@ def _split_lines(s: String) -> List[String]:
             current = String("")
         else:
             current += chr(Int(data[i]))
-    if len(current) > 0:
+    if current.byte_length() > 0:
         lines.append(current^)
     return lines^
 
@@ -281,7 +281,7 @@ def from_csv[T: _CsvMorphable](csv_str: String) raises -> List[T]:
     var results = List[T]()
 
     for i in range(1, len(lines)):
-        if len(lines[i]) > 0:
+        if lines[i].byte_length() > 0:
             var row = from_csv_row[T](header, lines[i])
             results.append(row^)
 
