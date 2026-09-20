@@ -9,7 +9,7 @@ from std.collections import List
 
 
 @fieldwise_init
-struct Employee(Copyable, Defaultable, Movable):
+struct Employee(Copyable, Defaultable):
     var name: String
     var department: String
     var salary: Int

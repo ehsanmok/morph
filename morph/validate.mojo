@@ -28,7 +28,7 @@ from std.collections import List
 
 
 @fieldwise_init
-struct ValidationError(Copyable, Movable, Writable):
+struct ValidationError(Copyable, Writable):
     """One validation failure for a named field."""
 
     var field: String

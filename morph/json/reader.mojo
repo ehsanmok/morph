@@ -18,7 +18,7 @@ Parameters:
     strict: If True, raise on unknown JSON keys not in the struct.
 """
 
-from std.builtin.rebind import trait_downcast, downcast, rebind
+from std.builtin.rebind import downcast
 from std.collections import Optional, List
 
 from morph.reflect import (
@@ -176,8 +176,11 @@ def _fill[
                     if not (field_type_name == OPT_INT_NAME or field_type_name == OPT_STRING_NAME or field_type_name == OPT_FLOAT64_NAME or field_type_name == OPT_BOOL_NAME):
                         raise Error("Missing required field '" + key + "'")
             else:
-                ref field = trait_downcast[_Base](reflect[T].field_ref[idx](result))
-                var ptr = UnsafePointer(to=field)
+                ref field = reflect[T].field_ref[idx](result)
+                comptime assert conforms_to(
+                    type_of(field), _Base
+                ), "morph: struct field must be Deinitable & Movable"
+                var ptr = Pointer(to=field)
 
                 comptime
                 if no_optionals:
@@ -190,67 +193,67 @@ def _fill[
 
                 comptime
                 if field_type_name == STRING_NAME:
-                    ptr.destroy_pointee()
-                    ptr.bitcast[String]().init_pointee_move(get_string(json, key))
+                    ptr.unsafe_deinit_pointee()
+                    ptr.unsafe_bitcast[String]().unsafe_write(get_string(json, key))
                 elif field_type_name == INT_NAME:
-                    ptr.destroy_pointee()
-                    ptr.bitcast[Int]().init_pointee_move(get_int(json, key))
+                    ptr.unsafe_deinit_pointee()
+                    ptr.unsafe_bitcast[Int]().unsafe_write(get_int(json, key))
                 elif field_type_name == INT64_NAME:
-                    ptr.destroy_pointee()
+                    ptr.unsafe_deinit_pointee()
                     var raw = json.get(key)
                     var parsed = loads(raw)
                     if not parsed.is_int():
                         raise _field_type_error(key, "Int64", parsed)
-                    ptr.bitcast[Int64]().init_pointee_move(parsed.int_value())
+                    ptr.unsafe_bitcast[Int64]().unsafe_write(parsed.int_value())
                 elif field_type_name == BOOL_NAME:
-                    ptr.destroy_pointee()
-                    ptr.bitcast[Bool]().init_pointee_move(get_bool(json, key))
+                    ptr.unsafe_deinit_pointee()
+                    ptr.unsafe_bitcast[Bool]().unsafe_write(get_bool(json, key))
                 elif field_type_name == OPT_INT_NAME:
-                    ptr.destroy_pointee()
-                    ptr.bitcast[Optional[Int]]().init_pointee_move(
+                    ptr.unsafe_deinit_pointee()
+                    ptr.unsafe_bitcast[Optional[Int]]().unsafe_write(
                         _deser_opt_int(json, key)
                     )
                 elif field_type_name == OPT_STRING_NAME:
-                    ptr.destroy_pointee()
-                    ptr.bitcast[Optional[String]]().init_pointee_move(
+                    ptr.unsafe_deinit_pointee()
+                    ptr.unsafe_bitcast[Optional[String]]().unsafe_write(
                         _deser_opt_string(json, key)
                     )
                 elif field_type_name == OPT_FLOAT64_NAME:
-                    ptr.destroy_pointee()
-                    ptr.bitcast[Optional[Float64]]().init_pointee_move(
+                    ptr.unsafe_deinit_pointee()
+                    ptr.unsafe_bitcast[Optional[Float64]]().unsafe_write(
                         _deser_opt_float64(json, key)
                     )
                 elif field_type_name == OPT_BOOL_NAME:
-                    ptr.destroy_pointee()
-                    ptr.bitcast[Optional[Bool]]().init_pointee_move(
+                    ptr.unsafe_deinit_pointee()
+                    ptr.unsafe_bitcast[Optional[Bool]]().unsafe_write(
                         _deser_opt_bool(json, key)
                     )
                 elif field_type_name == LIST_INT_NAME:
-                    ptr.destroy_pointee()
-                    ptr.bitcast[List[Int]]().init_pointee_move(
+                    ptr.unsafe_deinit_pointee()
+                    ptr.unsafe_bitcast[List[Int]]().unsafe_write(
                         _deser_list_int(json, key)
                     )
                 elif field_type_name == LIST_STRING_NAME:
-                    ptr.destroy_pointee()
-                    ptr.bitcast[List[String]]().init_pointee_move(
+                    ptr.unsafe_deinit_pointee()
+                    ptr.unsafe_bitcast[List[String]]().unsafe_write(
                         _deser_list_string(json, key)
                     )
                 elif field_type_name == LIST_FLOAT64_NAME:
-                    ptr.destroy_pointee()
-                    ptr.bitcast[List[Float64]]().init_pointee_move(
+                    ptr.unsafe_deinit_pointee()
+                    ptr.unsafe_bitcast[List[Float64]]().unsafe_write(
                         _deser_list_float64(json, key)
                     )
                 elif field_type_name == LIST_BOOL_NAME:
-                    ptr.destroy_pointee()
-                    ptr.bitcast[List[Bool]]().init_pointee_move(
+                    ptr.unsafe_deinit_pointee()
+                    ptr.unsafe_bitcast[List[Bool]]().unsafe_write(
                         _deser_list_bool(json, key)
                     )
                 elif field_type_name == FLOAT64_NAME or _FLOAT64_SIMD_PREFIX in field_type_name:
-                    ptr.destroy_pointee()
-                    ptr.bitcast[Float64]().init_pointee_move(get_float(json, key))
+                    ptr.unsafe_deinit_pointee()
+                    ptr.unsafe_bitcast[Float64]().unsafe_write(get_float(json, key))
                 elif field_type_name == FLOAT32_NAME or _FLOAT32_SIMD_PREFIX in field_type_name:
-                    ptr.destroy_pointee()
-                    ptr.bitcast[Float32]().init_pointee_move(
+                    ptr.unsafe_deinit_pointee()
+                    ptr.unsafe_bitcast[Float32]().unsafe_write(
                         Float32(get_float(json, key))
                     )
                 elif reflect[field_type].is_struct():
@@ -259,7 +262,7 @@ def _fill[
                     if not sub_json.is_object():
                         raise _field_type_error(key, "object", sub_json)
                     _fill[field_type, rename, skip_private, default_if_missing, False, no_optionals](
-                        ptr.bitcast[field_type]()[], sub_json
+                        ptr.unsafe_bitcast[field_type]()[], sub_json
                     )
                 else:
                     raise Error(

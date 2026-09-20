@@ -9,7 +9,7 @@ Supported field types:
     Custom: types implementing morph.serde.Serializable
 """
 
-from std.builtin.rebind import trait_downcast, rebind
+from std.builtin.rebind import rebind
 from std.collections import Optional, List
 
 from morph.reflect import (

@@ -12,7 +12,6 @@ Supported container types (hardcoded until GAP-3 is resolved):
     List[Int], List[String], List[Float64], List[Bool]
 """
 
-from std.builtin.rebind import trait_downcast, downcast
 from std.collections import Optional, List
 
 
@@ -45,8 +44,8 @@ comptime _FLOAT32_SIMD_PREFIX = "SIMD[DType.float32"
 # Trait bound aliases
 # ---------------------------------------------------------------------------
 
-comptime _Base = ImplicitlyDestructible & Movable
-comptime Morphable = Defaultable & Movable & ImplicitlyDestructible
+comptime _Base = Deinitable & Movable
+comptime Morphable = Defaultable & Movable & Deinitable
 
 
 # ---------------------------------------------------------------------------

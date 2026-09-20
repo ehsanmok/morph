@@ -34,7 +34,7 @@ struct CliOpts(Defaultable, Movable):
 
 
 @fieldwise_init
-struct CsvRecord(Copyable, Defaultable, Movable):
+struct CsvRecord(Copyable, Defaultable):
     var name: String
     var age: Int
     var score: Float64
@@ -48,7 +48,7 @@ struct CsvRecord(Copyable, Defaultable, Movable):
 
 
 @fieldwise_init
-struct SimpleRec(Copyable, Defaultable, Movable):
+struct SimpleRec(Copyable, Defaultable):
     var x: Int
     var y: Int
 

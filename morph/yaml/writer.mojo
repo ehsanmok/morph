@@ -9,7 +9,7 @@ Supported field types:
     Nested structs (indented sub-mappings)
 """
 
-from std.builtin.rebind import trait_downcast, rebind
+from std.builtin.rebind import rebind
 from std.collections import Optional, List
 
 from morph.reflect import (

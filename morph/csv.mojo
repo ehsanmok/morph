@@ -19,7 +19,7 @@ Usage::
 """
 
 from std.collections import List
-from std.builtin.rebind import trait_downcast, rebind
+from std.builtin.rebind import rebind
 from morph.reflect import (
     Morphable,
     _Base,
@@ -231,41 +231,45 @@ def from_csv_row[T: Morphable](header: List[String], row: String) raises -> T:
 
         if col_idx >= 0:
             var raw = values[col_idx]
-            ref field = trait_downcast[_Base](reflect[T].field_ref[idx](result))
-            var ptr = UnsafePointer(to=field)
+            ref field = reflect[T].field_ref[idx](result)
+            comptime assert conforms_to(
+                type_of(field), _Base
+            ), "morph: struct field must be Deinitable & Movable"
+            var ptr = Pointer(to=field)
 
             comptime
             if type_name == INT_NAME:
                 var val = atol(raw)
-                ptr.destroy_pointee()
-                ptr.bitcast[Int]().init_pointee_move(val)
+                ptr.unsafe_deinit_pointee()
+                ptr.unsafe_bitcast[Int]().unsafe_write(val)
             elif type_name == INT64_NAME:
                 var val = atol(raw)
-                ptr.destroy_pointee()
-                ptr.bitcast[Int64]().init_pointee_move(Int64(val))
+                ptr.unsafe_deinit_pointee()
+                ptr.unsafe_bitcast[Int64]().unsafe_write(Int64(val))
             elif type_name == BOOL_NAME:
                 var val = raw == "true" or raw == "True" or raw == "1"
-                ptr.destroy_pointee()
-                ptr.bitcast[Bool]().init_pointee_move(val)
+                ptr.unsafe_deinit_pointee()
+                ptr.unsafe_bitcast[Bool]().unsafe_write(val)
             elif type_name == FLOAT64_NAME:
                 var val = atof(raw)
-                ptr.destroy_pointee()
-                ptr.bitcast[Float64]().init_pointee_move(val)
+                ptr.unsafe_deinit_pointee()
+                ptr.unsafe_bitcast[Float64]().unsafe_write(val)
             elif type_name == STRING_NAME:
-                ptr.destroy_pointee()
-                ptr.bitcast[String]().init_pointee_move(raw)
+                ptr.unsafe_deinit_pointee()
+                ptr.unsafe_bitcast[String]().unsafe_write(raw)
 
     return result^
 
 
-comptime _CsvMorphable = Defaultable & Movable & Copyable & ImplicitlyDestructible
+comptime _CsvMorphable = Defaultable & Copyable & Deinitable
 
 
 def from_csv[T: _CsvMorphable](csv_str: String) raises -> List[T]:
     """Deserialize a full CSV string (header + rows) into a List of structs.
 
     Parameters:
-        T: The struct type (Defaultable, Movable, Copyable).
+        T: The struct type (Defaultable, Copyable; Copyable implies
+           Movable).
 
     Args:
         csv_str: Multi-line CSV string.

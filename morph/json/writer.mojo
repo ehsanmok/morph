@@ -16,7 +16,7 @@ Parameters:
     as_array: If True, serialize as positional JSON array (no field names).
 """
 
-from std.builtin.rebind import trait_downcast, downcast, rebind
+from std.builtin.rebind import rebind
 from std.collections import Optional, List
 
 from morph.reflect import (
@@ -130,8 +130,7 @@ def _ser[
     elif reflect[T].is_struct():
         comptime
         if conforms_to(T, Serializable):
-            ref custom = trait_downcast[Serializable](value)
-            return custom.serialize()
+            return value.serialize()
         else:
             return _ser_struct[T, rename, skip_private, add_type, as_array](value)
     else:

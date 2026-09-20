@@ -18,7 +18,7 @@ struct Null(Writable):
         writer.write("null")
 
 
-struct Value(Copyable, Movable):
+struct Value(Copyable):
     """A JSON value: null, bool, int, float, string, array, or object."""
 
     var _type: Int

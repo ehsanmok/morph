@@ -8,10 +8,10 @@ Provides introspection and transformation operations on structs:
 - ``replace[T]()``: copy struct with one field changed (by name)
 """
 
-from std.builtin.rebind import trait_downcast, rebind
-from morph.reflect import _Base, Morphable
+from std.builtin.rebind import rebind
+from morph.reflect import Morphable, _Base
 
-comptime _Copy = Copyable & ImplicitlyDestructible
+comptime _Copy = Copyable & Deinitable
 
 
 # ---------------------------------------------------------------------------
@@ -20,7 +20,7 @@ comptime _Copy = Copyable & ImplicitlyDestructible
 
 
 @fieldwise_init
-struct FieldInfo(Copyable, Movable, Writable):
+struct FieldInfo(Copyable, Writable):
     """Metadata about a single struct field."""
 
     var name: String
@@ -109,10 +109,13 @@ def replace[
         comptime fname = names[idx]
         comptime
         if fname == field_name:
-            ref field = trait_downcast[_Base](reflect[T].field_ref[idx](result))
-            var ptr = UnsafePointer(to=field)
-            ptr.destroy_pointee()
-            ptr.bitcast[String]().init_pointee_move(new_value)
+            ref field = reflect[T].field_ref[idx](result)
+            comptime assert conforms_to(
+                type_of(field), _Base
+            ), "morph: struct field must be Deinitable & Movable"
+            var ptr = Pointer(to=field)
+            ptr.unsafe_deinit_pointee()
+            ptr.unsafe_bitcast[String]().unsafe_write(new_value)
 
     return result^
 
@@ -147,10 +150,13 @@ def replace_int[
         comptime fname = names[idx]
         comptime
         if fname == field_name:
-            ref field = trait_downcast[_Base](reflect[T].field_ref[idx](result))
-            var ptr = UnsafePointer(to=field)
-            ptr.destroy_pointee()
-            ptr.bitcast[Int]().init_pointee_move(new_value)
+            ref field = reflect[T].field_ref[idx](result)
+            comptime assert conforms_to(
+                type_of(field), _Base
+            ), "morph: struct field must be Deinitable & Movable"
+            var ptr = Pointer(to=field)
+            ptr.unsafe_deinit_pointee()
+            ptr.unsafe_bitcast[Int]().unsafe_write(new_value)
 
     return result^
 
