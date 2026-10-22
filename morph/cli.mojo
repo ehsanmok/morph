@@ -442,7 +442,7 @@ def parse_args_nested[T: Morphable](args: List[String]) raises -> T:
                     else:
                         inner_out += inner_json.get(ik_name)
                 inner_out += "}"
-                out += inner_out^
+                out += inner_out
             else:
                 out += inner_raw
         elif k in patches:

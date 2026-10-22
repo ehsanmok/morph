@@ -356,7 +356,7 @@ def read_flat[
                 else:
                     inner += sub.get(sk)
             inner += "}"
-            out += inner^
+            out += inner
         else:
             if _has_key(flat_json, dk):
                 out += flat_json.get(dk)

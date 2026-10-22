@@ -261,7 +261,7 @@ def _properties_described[
             if is_deprecated:
                 enriched += ',"deprecated":true'
             enriched += "}"
-            out += enriched^
+            out += enriched
         else:
             out += base
 
