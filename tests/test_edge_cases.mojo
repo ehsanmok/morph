@@ -5,6 +5,7 @@ extra whitespace, deeply nested structures, many fields.
 """
 
 from morph.json import write, read
+from morph.json.value import loads
 from std.collections import Optional, List
 from std.testing import assert_equal, assert_true
 
@@ -213,6 +214,42 @@ def test_optional_with_empty_string() raises:
 
 
 # ---------------------------------------------------------------------------
+# Array traversal
+# ---------------------------------------------------------------------------
+
+
+def test_large_array_items() raises:
+    var n = 20000
+    var raw = "[" + "7," * (n - 1) + "7]"
+    var items = loads(raw).array_items()
+    assert_equal(len(items), n)
+    assert_equal(items[0].int_value(), 7)
+    assert_equal(items[n - 1].int_value(), 7)
+
+
+def test_array_items_mixed() raises:
+    var raw = String(
+        '[ 1 , "a,]b\\"" , [2, [3]] , {"k": [4, 5]} , -1.5 , null ]'
+    )
+    var items = loads(raw).array_items()
+    assert_equal(len(items), 6)
+    assert_equal(items[0].int_value(), 1)
+    assert_equal(items[1].string_value(), 'a,]b"')
+    assert_true(items[2].is_array())
+    assert_equal(len(items[2].array_items()), 2)
+    assert_true(items[3].is_object())
+    assert_equal(items[4].float_value(), -1.5)
+    assert_true(items[5].is_null())
+
+
+def test_nested_array_items() raises:
+    var items = loads("[[1,2],[3]]").array_items()
+    assert_equal(len(items), 2)
+    assert_equal(len(items[0].array_items()), 2)
+    assert_equal(items[1].array_items()[0].int_value(), 3)
+
+
+# ---------------------------------------------------------------------------
 # Runner
 # ---------------------------------------------------------------------------
 
@@ -259,4 +296,12 @@ def main() raises:
     test_optional_with_empty_string()
     print("  PASS: test_optional_with_empty_string")
 
-    print("=== All 13 edge case tests passed ===")
+    test_large_array_items()
+    print("  PASS: test_large_array_items")
+
+    test_array_items_mixed()
+    print("  PASS: test_array_items_mixed")
+
+    test_nested_array_items()
+    print("  PASS: test_nested_array_items")
+    print("=== All 16 edge case tests passed ===")

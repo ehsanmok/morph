@@ -181,10 +181,9 @@ struct Value(Copyable):
         var result = List[Value]()
         if self._count == 0:
             return result^
-        for i in range(self._count):
-            var elem_str = _extract_array_element(self._raw, i)
-            var elem = _parse_value(elem_str)
-            result.append(elem^)
+        var elems = _extract_array_elements(self._raw)
+        for i in range(len(elems)):
+            result.append(_parse_value(elems[i]))
         return result^
 
 
@@ -671,25 +670,20 @@ def _extract_json_value(raw: String, start: Int) raises -> String:
     return String(from_utf8_lossy=raw[byte=vs:i].as_bytes())
 
 
-def _extract_array_element(raw: String, index: Int) raises -> String:
-    """Extract an array element by index from raw JSON."""
+def _extract_array_elements(raw: String) raises -> List[String]:
+    """Extract all top-level array elements from raw JSON in a single pass.
+
+    Walks the array once with a forward cursor, so full traversal is O(N)
+    rather than rescanning from the start for every element.
+    """
+    var result = List[String]()
     var data = raw.as_bytes()
     var n = len(data)
     var i = 0
-    var current = 0
-    var depth = 0
 
-    while i < n and (
-        data[i] == UInt8(ord("["))
-        or data[i] == UInt8(ord(" "))
-        or data[i] == UInt8(ord("\t"))
-        or data[i] == UInt8(ord("\n"))
-        or data[i] == UInt8(ord("\r"))
-    ):
-        if data[i] == UInt8(ord("[")):
-            _ = depth
-            depth = 1
+    while i < n and data[i] != UInt8(ord("[")):
         i += 1
+    i += 1
 
     while i < n:
         while i < n and (
@@ -701,9 +695,9 @@ def _extract_array_element(raw: String, index: Int) raises -> String:
             i += 1
         if i >= n or data[i] == UInt8(ord("]")):
             break
-        if current == index:
-            return _extract_json_value(raw, i)
+        result.append(_extract_json_value(raw, i))
 
+        # Advance to the ',' or ']' that ends this element.
         var ed = 0
         var in_str = False
         var escaped = False
@@ -732,15 +726,14 @@ def _extract_array_element(raw: String, index: Int) raises -> String:
                 else:
                     break
             elif c == UInt8(ord(",")) and ed == 0:
-                i += 1
-                current += 1
                 break
             i += 1
 
         if i >= n or data[i] == UInt8(ord("]")):
             break
+        i += 1
 
-    raise Error("Array index out of bounds: " + String(index))
+    return result^
 
 
 def _count_array_elements(raw: String) -> Int:
